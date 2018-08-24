@@ -20,3 +20,4 @@ List of Authors and Contributors
 - `pintor <https://github.com/pintor>`_
 - `BaconAndEggs <https://github.com/BaconAndEggs>`_
 - `Tuomas Suutari <https://github.com/suutari-ai>`_ (Anders Innovations)
+- `Toni Leino <https://github.com/Frodotus>`_

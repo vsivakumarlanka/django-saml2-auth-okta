@@ -111,7 +111,16 @@ How to use?
 
         SAML2_AUTH = {
             # Required setting
-            'METADATA_AUTO_CONF_URL': '[The auto(dynamic) metadata configuration URL of SAML2]',
+            'SAML_CLIENT_SETTINGS': { # Pysaml2 Saml client settings (https://pysaml2.readthedocs.io/en/latest/howto/config.html)
+                'entityid': 'https://mysite.com/saml2_auth/acs/', # The optional entity ID string to be passed in the 'Issuer' element of authn request, if required by the IDP.
+                'metadata': {
+                    'remote': [
+                        {
+                            "url": 'https://mysite.com/metadate.xml', # The auto(dynamic) metadata configuration URL of SAML2
+                        },
+                    ],
+                },            
+            },
 
             # Optional settings below
             'DEFAULT_NEXT_URL': '/admin',  # Custom target redirect URL after the user get logged in. Default to /admin if not set. This setting will be overwritten if you have parameter ?next= specificed in the login URL.
@@ -132,8 +141,6 @@ How to use?
                 'BEFORE_LOGIN': 'path.to.your.login.hook.method',
             },
             'ASSERTION_URL': 'https://mysite.com', # Custom URL to validate incoming SAML requests against
-            'ENTITY_ID': 'https://mysite.com/saml2_auth/acs/', # Populates the Issuer element in authn request
-            'NAME_ID_FORMAT': FormatString, # Sets the Format property of authn NameIDPolicy element
         }
 
 #. In your SAML2 SSO identity provider, set the Single-sign-on URL and Audience
@@ -142,8 +149,6 @@ How to use?
 
 Explanation
 ~~~~~~~~~~~
-
-**METADATA_AUTO_CONF_URL** Auto SAML2 metadata configuration URL
 
 **NEW_USER_PROFILE** Default settings for newly created users
 
@@ -168,11 +173,6 @@ django-saml2-auth will validate the SAML response's Service Provider address
 against the actual HTTP request's host and scheme. If this value is set, it
 will validate against ASSERTION_URL instead - perfect for when django running
 behind a reverse proxy.
-
-**ENTITY_ID** The optional entity ID string to be passed in the 'Issuer' element of authn request, if required by the IDP.
-
-**NAME_ID_FORMAT** Set to the string 'None', to exclude sending the 'Format' property of the 'NameIDPolicy' element in authn requests.
-Default value if not specified is 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient'.
 
 Customize
 ---------

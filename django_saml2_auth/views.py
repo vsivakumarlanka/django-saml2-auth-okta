@@ -27,6 +27,8 @@ except:
     import urllib.error
     import urllib.parse
 
+import collections
+
 if parse_version(get_version()) >= parse_version('1.7'):
     from django.utils.module_loading import import_string
 else:
@@ -62,18 +64,19 @@ def get_reverse(objs):
         'https://github.com/andersinno/django-saml2-auth-ai/issues/new'
     ) % str(objs))
 
+def _merge_dict(d1, d2):
+    for k,v2 in d2.items():
+        v1 = d1.get(k)
+        if ( isinstance(v1, collections.Mapping) and
+             isinstance(v2, collections.Mapping) ):
+            _merge_dict(v1, v2)
+        else:
+            d1[k] = v2
 
 def _get_saml_client(domain):
     acs_url = domain + get_reverse([acs, 'acs', 'django_saml2_auth:acs'])
 
     saml_settings = {
-        'metadata': {
-            'remote': [
-                {
-                    "url": settings.SAML2_AUTH['METADATA_AUTO_CONF_URL'],
-                },
-            ],
-        },
         'service': {
             'sp': {
                 'endpoints': {
@@ -91,11 +94,7 @@ def _get_saml_client(domain):
         },
     }
 
-    if 'ENTITY_ID' in settings.SAML2_AUTH:
-        saml_settings['entityid'] = settings.SAML2_AUTH['ENTITY_ID']
-
-    if 'NAME_ID_FORMAT' in settings.SAML2_AUTH:
-        saml_settings['service']['sp']['name_id_format'] = settings.SAML2_AUTH['NAME_ID_FORMAT']
+    _merge_dict(saml_settings, settings.SAML2_AUTH['SAML_CLIENT_SETTINGS'])
 
     spConfig = Saml2Config()
     spConfig.load(saml_settings)
@@ -206,8 +205,14 @@ def signin(r):
 
     r.session['login_next_url'] = next_url
 
+    idp_entity_id = None
+    try:
+        idp_entity_id = settings.SAML2_AUTH['SAML_CLIENT_SETTINGS']['service']['sp']['idp']
+    except KeyError:
+        pass
+
     saml_client = _get_saml_client(get_current_domain(r))
-    _, info = saml_client.prepare_for_authenticate()
+    _, info = saml_client.prepare_for_authenticate(idp_entity_id)
 
     redirect_url = None
 
