@@ -1,6 +1,13 @@
 ChangeLog of Django SAML2 Auth AI
 =================================
 
+1.0.1
+-----
+
+Released at 2018-08-24 14:50 +0300.
+
+- Fix formatting error in README
+
 1.0.0
 -----
 
