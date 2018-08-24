@@ -116,7 +116,7 @@ How to use?
                 'metadata': {
                     'remote': [
                         {
-                            "url": 'https://mysite.com/metadate.xml', # The auto(dynamic) metadata configuration URL of SAML2
+                            "url": 'https://mysite.com/metadata.xml', # The auto(dynamic) metadata configuration URL of SAML2
                         },
                     ],
                 },
