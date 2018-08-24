@@ -237,6 +237,7 @@ License
 -------
 
 Copyright 2016-2018 Fang Li
+
 Copyright 2018 Anders Innovations
 
 Licensed under the Apache License, Version 2.0 (the "License");
