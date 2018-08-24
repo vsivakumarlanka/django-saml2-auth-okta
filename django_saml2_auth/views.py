@@ -58,7 +58,11 @@ def get_reverse(objs):
             return reverse(obj)
         except:
             pass
-    raise Exception('We got a URL reverse issue: %s. This is a known issue but please still submit a ticket at https://github.com/fangli/django-saml2-auth/issues/new' % str(objs))
+    raise Exception((
+        'We got a URL reverse issue: %s. '
+        'This is a known issue but please still submit a ticket at '
+        'https://github.com/andersinno/django-saml2-auth-ai/issues/new'
+    ) % str(objs))
 
 
 def _get_saml_client(domain):

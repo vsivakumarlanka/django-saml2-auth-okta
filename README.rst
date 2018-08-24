@@ -1,60 +1,47 @@
-=====================================
-Django SAML2 Authentication Made Easy
-=====================================
-
-:Author: Fang Li
-:Version: Use 1.1.4 for Django <=1.9 and 2.x.x for Django >= 1.9
-
-.. image:: https://img.shields.io/pypi/pyversions/django-saml2-auth.svg
-    :target: https://pypi.python.org/pypi/django-saml2-auth
-
-.. image:: https://img.shields.io/pypi/v/django-saml2-auth.svg
-    :target: https://pypi.python.org/pypi/django-saml2-auth
-
-.. image:: https://img.shields.io/pypi/dm/django-saml2-auth.svg
-        :target: https://pypi.python.org/pypi/django-saml2-auth
+Django SAML2 Authentication AI
+==============================
 
 This project aims to provide a dead simple way to integrate SAML2
 Authentication into your Django powered app. Try it now, and get rid of the
 complicated configuration of SAML.
 
-Any SAML2 based SSO(Single-Sign-On) identity provider with dynamic metadata
+Any SAML2 based SSO (Single-Sign-On) identity provider with dynamic metadata
 configuration is supported by this Django plugin, for example Okta.
 
+This project is a fork of django-saml2-auth_ by `Fang Li`_.
 
+.. _django-saml2-auth: https://github.com/fangli/django-saml2-auth
+.. _`Fang Li`: https://github.com/fangli
 
-Donate
-======
+|PyPI|
 
-We accept your donations by clicking the awesome |star| instead of any physical transfer.
-
-.. |star| image:: https://img.shields.io/github/stars/fangli/django-saml2-auth.svg?style=social&label=Star&maxAge=86400
-
+.. [PyPI| image::
+   https://img.shields.io/pypi/v/django-saml2-auth-ai.svg
+   :target: https://pypi.org/project/django-saml2-auth-ai/
 
 
 Dependencies
-============
+------------
 
 This plugin is compatible with Django 1.6/1.7/1.8/1.9/1.10. The `pysaml2` Python
 module is required.
 
 
-
 Install
-=======
+-------
 
 You can install this plugin via `pip`:
 
 .. code-block:: bash
 
-    # pip install django_saml2_auth
+    # pip install django-saml2-auth-ai
 
 or from source:
 
 .. code-block:: bash
 
-    # git clone https://github.com/fangli/django-saml2-auth
-    # cd django-saml2-auth
+    # git clone https://github.com/andersinno/django-saml2-auth-ai
+    # cd django-saml2-auth-ai
     # python setup.py install
 
 xmlsec is also required by pysaml2:
@@ -63,11 +50,11 @@ xmlsec is also required by pysaml2:
 
     # yum install xmlsec1
     // or
-    # apt-get install xmlsec1
+    # apt install xmlsec1
 
 
 What does this plugin do?
-=========================
+-------------------------
 
 This plugin takes over Django's login page and redirect the user to a SAML2
 SSO authentication service. Once the user is logged in and redirected back,
@@ -78,7 +65,7 @@ redirected to their last visited page.
 
 
 How to use?
-===========
+-----------
 
 #. Import the views module in your root urls.py
 
@@ -154,7 +141,7 @@ How to use?
 
 
 Explanation
------------
+~~~~~~~~~~~
 
 **METADATA_AUTO_CONF_URL** Auto SAML2 metadata configuration URL
 
@@ -188,7 +175,7 @@ behind a reverse proxy.
 Default value if not specified is 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient'.
 
 Customize
-=========
+---------
 
 The default permission `denied` page and user `welcome` page can be
 overridden.
@@ -222,7 +209,7 @@ defaults listed in the `settings.py` `ATTRIBUTES_MAP`, update them in
 
 
 For Okta Users
-==============
+--------------
 
 I created this plugin originally for Okta.
 
@@ -236,38 +223,12 @@ The `Identity Provider metadata` link is the METADATA_AUTO_CONF_URL.
 
 
 How to Contribute
-=================
+-----------------
 
 #. Check for open issues or open a fresh issue to start a discussion around a feature idea or a bug.
 #. Fork `the repository`_ on GitHub to start making your changes to the **master** branch (or branch off of it).
 #. Write a test which shows that the bug was fixed or that the feature works as expected.
 #. Send a pull request and bug the maintainer until it gets merged and published. :) Make sure to add yourself to AUTHORS_.
 
-.. _`the repository`: http://github.com/fangli/django-saml2-auth
-.. _AUTHORS: https://github.com/fangli/django-saml2-auth/blob/master/AUTHORS.rst
-
-
-Release Log
-===========
-
-2.2.0: ADFS SAML compatibility and fixed some issue for Django2.0
-
-2.1.2: Merged #35
-
-2.1.1: Added ASSERTION_URL in settings.
-
-2.1.0: Add DEFAULT_NEXT_URL. Issue #19.
-
-2.0.4: Fixed compatibility with Windows.
-
-2.0.3: Fixed a vulnerabilities in the login flow, thanks qwrrty.
-
-2.0.1: Add support for Django 1.10
-
-1.1.4: Fixed urllib bug
-
-1.1.2: Added support for Python 2.7/3.x
-
-1.1.0: Added support for Django 1.6/1.7/1.8/1.9
-
-1.0.4: Fixed English grammar mistakes
+.. _`the repository`: http://github.com/andersinno/django-saml2-auth-ai
+.. _AUTHORS: https://github.com/andersinno/django-saml2-auth-ai/blob/master/AUTHORS.rst

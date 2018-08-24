@@ -1,24 +1,16 @@
-This project is written and maintained by Fang Li and
-various contributors:
+Authors of Django SAML2 Auth AI
+===============================
 
+This project is based on Django SAML2 Auth which is written by
+`Fang Li <https://github.com/fangli>`_ and various contributors.
 
-Django Saml2 Auth
------------------
+The Django SAML2 Auth AI fork is maintained by
+`Anders Innovations <https://www.anders.fi/en/>`_.
 
-- Fang Li
+List of Authors and Contributors
+--------------------------------
 
-
-
-Pysaml2
--------
-
-- Roland Hedberg and it's contributors
-
-
-
-Contributors
-------------
-
+- `Fang Li <https://github.com/fangli>`_
 - `DSpeichert <https://github.com/DSpeichert>`_
 - `jacobh <https://github.com/jacobh>`_
 - `Gene Wood <http://github.com/gene1wood/>`_
