@@ -1,6 +1,13 @@
 ChangeLog of Django SAML2 Auth AI
 =================================
 
+1.1.0
+-----
+
+Released at 2018-08-24 15:00 +0300.
+
+- Allow passing through pysaml2 client settings
+
 1.0.1
 -----
 
