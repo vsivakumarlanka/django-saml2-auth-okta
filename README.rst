@@ -15,7 +15,7 @@ This project is a fork of django-saml2-auth_ by `Fang Li`_.
 
 |PyPI|
 
-.. [PyPI| image::
+.. |PyPI| image::
    https://img.shields.io/pypi/v/django-saml2-auth-ai.svg
    :target: https://pypi.org/project/django-saml2-auth-ai/
 
