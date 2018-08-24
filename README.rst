@@ -119,7 +119,7 @@ How to use?
                             "url": 'https://mysite.com/metadate.xml', # The auto(dynamic) metadata configuration URL of SAML2
                         },
                     ],
-                },            
+                },
             },
 
             # Optional settings below
