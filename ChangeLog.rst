@@ -1,6 +1,11 @@
 ChangeLog of Django SAML2 Auth AI
 =================================
 
+1.2.0
+-----
+
+Released at 2018-09-05 13:25 +0300.
+
 - Support custom User model
 
   - Utilize Django's get_user_model function to get the active User
