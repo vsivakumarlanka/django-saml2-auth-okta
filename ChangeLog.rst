@@ -1,6 +1,16 @@
 ChangeLog of Django SAML2 Auth AI
 =================================
 
+- Support custom User model
+
+  - Utilize Django's get_user_model function to get the active User
+    model which might be customized with the AUTH_USER_MODEL setting
+
+- Support populating any User field from the SAML reply
+
+  - Implement copying data from the SAML reply to any field of the User
+    object by specifying the fields in the ATTRIBUTES_MAP setting
+
 1.1.0
 -----
 
