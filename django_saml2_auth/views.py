@@ -117,11 +117,18 @@ def denied(r):
     return render(r, 'django_saml2_auth/denied.html')
 
 
-def _create_new_user(username, email, firstname, lastname):
-    user = user_model.objects.create_user(username, email)
-    user.first_name = firstname
-    user.last_name = lastname
-    groups = [Group.objects.get(name=x) for x in settings.SAML2_AUTH.get('NEW_USER_PROFILE', {}).get('USER_GROUPS', [])]
+def _create_new_user(user_identity):
+    attributes_map = settings.SAML2_AUTH.get('ATTRIBUTES_MAP', {})
+    user_name = user_identity[attributes_map.get('username', 'UserName')][0]
+    user = user_model.objects.create_user(user_name)
+    for (user_attr, saml_attr) in attributes_map.items():
+        if user_attr != 'username':
+            values = user_identity.get(saml_attr)
+            if values is not None:
+                setattr(user, user_attr, values[0])
+
+    groups = [Group.objects.get(name=x) for x in settings.SAML2_AUTH.get(
+        'NEW_USER_PROFILE', {}).get('USER_GROUPS', [])]
     if parse_version(get_version()) >= parse_version('2.0'):
         user.groups.set(groups)
     else:
@@ -149,12 +156,11 @@ def acs(r):
 
     user_identity = authn_response.get_identity()
     if user_identity is None:
-        return HttpResponseRedirect(get_reverse([denied, 'denied', 'django_saml2_auth:denied']))
+        return HttpResponseRedirect(get_reverse(
+            [denied, 'denied', 'django_saml2_auth:denied']))
 
-    user_email = user_identity[settings.SAML2_AUTH.get('ATTRIBUTES_MAP', {}).get('email', 'Email')][0]
-    user_name = user_identity[settings.SAML2_AUTH.get('ATTRIBUTES_MAP', {}).get('username', 'UserName')][0]
-    user_first_name = user_identity[settings.SAML2_AUTH.get('ATTRIBUTES_MAP', {}).get('first_name', 'FirstName')][0]
-    user_last_name = user_identity[settings.SAML2_AUTH.get('ATTRIBUTES_MAP', {}).get('last_name', 'LastName')][0]
+    user_name = user_identity[settings.SAML2_AUTH.get(
+        'ATTRIBUTES_MAP', {}).get('username', 'UserName')][0]
 
     target_user = None
     is_new_user = False
@@ -164,7 +170,7 @@ def acs(r):
         if settings.SAML2_AUTH.get('TRIGGER', {}).get('BEFORE_LOGIN', None):
             import_string(settings.SAML2_AUTH['TRIGGER']['BEFORE_LOGIN'])(user_identity)
     except user_model.DoesNotExist:
-        target_user = _create_new_user(user_name, user_email, user_first_name, user_last_name)
+        target_user = _create_new_user(user_identity)
         if settings.SAML2_AUTH.get('TRIGGER', {}).get('CREATE_USER', None):
             import_string(settings.SAML2_AUTH['TRIGGER']['CREATE_USER'])(user_identity)
         is_new_user = True
