@@ -1,6 +1,8 @@
 ChangeLog of Django SAML2 Auth AI
 =================================
 
+- Pass also the user as parameter to callback calls
+
 1.2.0
 -----
 
