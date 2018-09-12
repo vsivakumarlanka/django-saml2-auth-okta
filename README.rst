@@ -160,13 +160,17 @@ which point to a method to be called. The referenced method should accept a
 single argument which is a dictionary of attributes and values sent by the
 identity provider, representing the user's identity.
 
-**TRIGGER.CREATE_USER** A method to be called upon new user creation. This
-method will be called before the new user is logged in and after the user's
-record is created. This method should accept ONE parameter of user dict.
+**TRIGGER.CREATE_USER** A function to be called upon new user creation.
+It will be called before the new user is logged in and after the user's
+record is created.  The function is called with two positional
+arguments: User model instance and a dictionary of the user data
+received from SAML.
 
-**TRIGGER.BEFORE_LOGIN** A method to be called when an existing user logs in.
-This method will be called before the user is logged in and after user
-attributes are returned by the SAML2 identity provider. This method should accept ONE parameter of user dict.
+**TRIGGER.BEFORE_LOGIN** A function to be called when an existing user
+logs in.  It will be called before the user is logged in and after the
+user attributes are returned by the SAML2 identity provider. The
+function is called with two positional arguments: User model instance
+and a dictionary of the user data received from SAML.
 
 **ASSERTION_URL** A URL to validate incoming SAML responses against. By default,
 django-saml2-auth will validate the SAML response's Service Provider address
