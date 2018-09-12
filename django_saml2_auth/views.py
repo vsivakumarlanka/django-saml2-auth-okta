@@ -168,11 +168,11 @@ def acs(r):
     try:
         target_user = user_model.objects.get(username=user_name)
         if settings.SAML2_AUTH.get('TRIGGER', {}).get('BEFORE_LOGIN', None):
-            import_string(settings.SAML2_AUTH['TRIGGER']['BEFORE_LOGIN'])(user_identity)
+            import_string(settings.SAML2_AUTH['TRIGGER']['BEFORE_LOGIN'])(target_user, user_identity)
     except user_model.DoesNotExist:
         target_user = _create_new_user(user_identity)
         if settings.SAML2_AUTH.get('TRIGGER', {}).get('CREATE_USER', None):
-            import_string(settings.SAML2_AUTH['TRIGGER']['CREATE_USER'])(user_identity)
+            import_string(settings.SAML2_AUTH['TRIGGER']['CREATE_USER'])(target_user, user_identity)
         is_new_user = True
 
     r.session.flush()
