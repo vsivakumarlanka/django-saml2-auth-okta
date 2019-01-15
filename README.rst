@@ -137,7 +137,9 @@ How to use?
                 'last_name': 'LastName',
             },
             'TRIGGER': {
-                'CREATE_USER': 'path.to.your.new.user.hook.method',
+                'FIND_USER': 'path.to.your.find.user.hook.method',
+                'NEW_USER': 'path.to.your.new.user.hook.method',
+                'CREATE_USER': 'path.to.your.create.user.hook.method',
                 'BEFORE_LOGIN': 'path.to.your.login.hook.method',
             },
             'ASSERTION_URL': 'https://mysite.com', # Custom URL to validate incoming SAML requests against
@@ -160,11 +162,20 @@ which point to a method to be called. The referenced method should accept a
 single argument which is a dictionary of attributes and values sent by the
 identity provider, representing the user's identity.
 
+**TRIGGER.FIND_USER** A function to be called when trying to find user.
+The function is called with one positional argument: a dictionary of the
+user data received from SAML.
+
 **TRIGGER.CREATE_USER** A function to be called upon new user creation.
 It will be called before the new user is logged in and after the user's
 record is created.  The function is called with two positional
 arguments: User model instance and a dictionary of the user data
 received from SAML.
+
+**TRIGGER.NEW_USER** A function to be called upon new user creation.
+It will be called before the user's record is saved. The function is
+called with two positional arguments: User model instance and a dictionary
+of the user data received from SAML.
 
 **TRIGGER.BEFORE_LOGIN** A function to be called when an existing user
 logs in.  It will be called before the user is logged in and after the
