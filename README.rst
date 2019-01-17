@@ -23,8 +23,8 @@ This project is a fork of django-saml2-auth_ by `Fang Li`_.
 Dependencies
 ------------
 
-This plugin is compatible with Django 1.6/1.7/1.8/1.9/1.10. The `pysaml2` Python
-module is required.
+This plugin is compatible with Django 1.8, 1.9, 1.10, 1.11, and 2.0.
+The `pysaml2` Python module is required.
 
 
 Install
