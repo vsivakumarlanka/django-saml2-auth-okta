@@ -1,6 +1,11 @@
 ChangeLog of Django SAML2 Auth AI
 =================================
 
+2.1.0
+-----
+
+Released at 2019-01-17 09:15 +0200.
+
 - Add new hooks TRIGGER.FIND_USER and TRIGGER.NEW_USER.
 
 - Add support for Django 2.0
