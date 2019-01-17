@@ -136,6 +136,8 @@ def _create_new_user(user_identity):
     user.is_active = settings.SAML2_AUTH.get('NEW_USER_PROFILE', {}).get('ACTIVE_STATUS', True)
     user.is_staff = settings.SAML2_AUTH.get('NEW_USER_PROFILE', {}).get('STAFF_STATUS', True)
     user.is_superuser = settings.SAML2_AUTH.get('NEW_USER_PROFILE', {}).get('SUPERUSER_STATUS', False)
+    if settings.SAML2_AUTH.get('TRIGGER', {}).get('NEW_USER', None):
+        import_string(settings.SAML2_AUTH['TRIGGER']['NEW_USER'])(user, user_identity)
     user.save()
     return user
 
@@ -165,11 +167,17 @@ def acs(r):
     target_user = None
     is_new_user = False
 
-    try:
-        target_user = user_model.objects.get(username=user_name)
+    find_user_spec = settings.SAML2_AUTH.get('TRIGGER', {}).get('FIND_USER')
+    if find_user_spec:
+        find_user = import_string(find_user_spec)
+        target_user = find_user(user_identity)
+    else:
+        target_user = user_model.objects.filter(username=user_name).first()
+
+    if target_user:
         if settings.SAML2_AUTH.get('TRIGGER', {}).get('BEFORE_LOGIN', None):
             import_string(settings.SAML2_AUTH['TRIGGER']['BEFORE_LOGIN'])(target_user, user_identity)
-    except user_model.DoesNotExist:
+    else:
         target_user = _create_new_user(user_identity)
         if settings.SAML2_AUTH.get('TRIGGER', {}).get('CREATE_USER', None):
             import_string(settings.SAML2_AUTH['TRIGGER']['CREATE_USER'])(target_user, user_identity)
