@@ -1,6 +1,16 @@
 ChangeLog of Django SAML2 Auth AI
 =================================
 
+2.1.1
+-----
+
+Released at 2019-03-29 08:20 +0200.
+
+- Fix assumption that "admin:index" URL always exists
+
+  - Now it is possible to run the app without Django Admin as long as
+    the DEFAULT_NEXT_URL setting is configured
+
 2.1.0
 -----
 
