@@ -46,6 +46,14 @@ def get_current_domain(r):
     )
 
 
+def get_default_next_url():
+    configured_next_url = settings.SAML2_AUTH.get('DEFAULT_NEXT_URL')
+    if configured_next_url:
+        return configured_next_url
+    else:
+        return get_reverse('admin:index')
+
+
 def get_reverse(objs):
     '''In order to support different django version, I have to do this '''
     if parse_version(get_version()) >= parse_version('2.0'):
@@ -110,7 +118,7 @@ def welcome(r):
     try:
         return render(r, 'django_saml2_auth/welcome.html', {'user': r.user})
     except TemplateDoesNotExist:
-        return HttpResponseRedirect(settings.SAML2_AUTH.get('DEFAULT_NEXT_URL', get_reverse('admin:index')))
+        return HttpResponseRedirect(get_default_next_url())
 
 
 def denied(r):
@@ -146,7 +154,7 @@ def _create_new_user(user_identity):
 def acs(r):
     saml_client = _get_saml_client(get_current_domain(r))
     resp = r.POST.get('SAMLResponse', None)
-    next_url = r.session.get('login_next_url', settings.SAML2_AUTH.get('DEFAULT_NEXT_URL', get_reverse('admin:index')))
+    next_url = r.session.get('login_next_url', get_default_next_url())
 
     if not resp:
         return HttpResponseRedirect(get_reverse([denied, 'denied', 'django_saml2_auth:denied']))
@@ -207,13 +215,13 @@ def signin(r):
     except:
         import urllib.parse as _urlparse
         from urllib.parse import unquote
-    next_url = r.GET.get('next', settings.SAML2_AUTH.get('DEFAULT_NEXT_URL', get_reverse('admin:index')))
+    next_url = r.GET.get('next', get_default_next_url())
 
     try:
         if 'next=' in unquote(next_url):
             next_url = _urlparse.parse_qs(_urlparse.urlparse(unquote(next_url)).query)['next'][0]
     except:
-        next_url = r.GET.get('next', settings.SAML2_AUTH.get('DEFAULT_NEXT_URL', get_reverse('admin:index')))
+        next_url = r.GET.get('next', get_default_next_url())
 
     # Only permit signin requests where the next_url is a safe URL
     if not is_safe_url(next_url, None):
