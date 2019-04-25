@@ -1,6 +1,13 @@
 ChangeLog of Django SAML2 Auth AI
 =================================
 
+2.1.2
+-----
+
+Released at 2019-04-25 11:56 +0200.
+
+- Add saml2 logout
+
 2.1.1
 -----
 
