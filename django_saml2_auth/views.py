@@ -14,11 +14,14 @@ from django.conf import settings
 from django.contrib.auth import get_user_model, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
+from django.http import (HttpResponse, HttpResponseRedirect,
+                         HttpResponseServerError)
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.template import TemplateDoesNotExist
-from django.http import HttpResponseRedirect
 from django.utils.http import is_safe_url
+
+from saml2.ident import code, decode
 
 try:
     import urllib2 as _urllib
@@ -74,6 +77,7 @@ def get_reverse(objs):
         'https://github.com/andersinno/django-saml2-auth-ai/issues/new'
     ) % str(objs))
 
+
 def _merge_dict(d1, d2):
     for k,v2 in d2.items():
         v1 = d1.get(k)
@@ -82,6 +86,7 @@ def _merge_dict(d1, d2):
             _merge_dict(v1, v2)
         else:
             d1[k] = v2
+
 
 def _get_saml_client(domain):
     acs_url = domain + get_reverse([acs, 'acs', 'django_saml2_auth:acs'])
@@ -111,6 +116,25 @@ def _get_saml_client(domain):
     spConfig.allow_unknown_attributes = True
     saml_client = Saml2Client(config=spConfig)
     return saml_client
+
+
+def _set_subject_id(session, subject_id):
+    session['_saml2_subject_id'] = code(subject_id)
+
+
+def _get_subject_id(session):
+    try:
+        return decode(session['_saml2_subject_id'])
+    except KeyError:
+        return None
+
+
+def _get_location(http_info):
+    try:
+        headers = dict(http_info['headers'])
+        return headers['Location']
+    except KeyError:
+        return http_info['url']
 
 
 @login_required
@@ -164,6 +188,7 @@ def acs(r):
     if authn_response is None:
         return HttpResponseRedirect(get_reverse([denied, 'denied', 'django_saml2_auth:denied']))
 
+    session_info = authn_response.session_info()
     user_identity = authn_response.get_identity()
     if user_identity is None:
         return HttpResponseRedirect(get_reverse(
@@ -192,6 +217,7 @@ def acs(r):
         is_new_user = True
 
     r.session.flush()
+    _set_subject_id(r.session, session_info['name_id'])
 
     if target_user.is_active:
         target_user.backend = 'django.contrib.auth.backends.ModelBackend'
@@ -249,5 +275,57 @@ def signin(r):
 
 
 def signout(r):
+    """
+    Initiates saml2 logout.
+
+    :param r: HTTP request
+    """
+    saml_client = _get_saml_client(get_current_domain(r))
+    subject_id = _get_subject_id(r.session)
+    idp_entity_id = None
+    try:
+        idp_entity_id = settings.SAML2_AUTH['SAML_CLIENT_SETTINGS']['service']['sp']['idp']
+    except KeyError:
+        return HttpResponseServerError('Idp not defined')
+
+    response = saml_client.do_logout(subject_id, [idp_entity_id], "", None)
+    return handle_logout_response(response)
+
+
+def handle_logout_response(response):
+    """
+    Handles saml2 logout response.
+
+    :param response: Saml2 logout response
+    """
+    if len(response) > 1:
+        # Currently only one source is supported
+        return HttpResponseServerError('Logout from several sources not supported')
+    for entityid, logout_info in response.items():
+        if isinstance(logout_info, tuple):
+            # logout_info is a tuple containing header information and a HTML message.
+            binding, http_info = logout_info
+            if binding == BINDING_HTTP_POST:
+                # Display content defined in logout response
+                body = ''.join(http_info['data'])
+                return HttpResponse(body)
+            elif binding == BINDING_HTTP_REDIRECT:
+                # Redirect to address defined in logout response
+                return HttpResponseRedirect(_get_location(http_info))
+            else:
+                # Unknown binding
+                return HttpResponseServerError('Logout binding not supported')
+        else: # result from logout, should be OK
+            pass
+
+    return HttpResponseServerError('Failed to log out')
+
+
+def finish_signout(r):
+    """
+    Logout local user
+
+    :param r: HTTP request
+    """
     logout(r)
     return render(r, 'django_saml2_auth/signout.html')
