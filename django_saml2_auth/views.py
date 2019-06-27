@@ -22,6 +22,7 @@ from django.template import TemplateDoesNotExist
 from django.utils.http import is_safe_url
 
 from saml2.ident import code, decode
+from saml2.response import StatusAuthnFailed
 
 try:
     import urllib2 as _urllib
@@ -183,8 +184,17 @@ def acs(r):
     if not resp:
         return HttpResponseRedirect(get_reverse([denied, 'denied', 'django_saml2_auth:denied']))
 
-    authn_response = saml_client.parse_authn_request_response(
-        resp, entity.BINDING_HTTP_POST)
+    # Parsing the response throws `StatusAuthnFailed` exception on user related
+    # authentication errors (such as user canceling the authentication), so
+    # deny access if that happens.
+    try:
+        authn_response = saml_client.parse_authn_request_response(
+            resp,
+            entity.BINDING_HTTP_POST,
+        )
+    except StatusAuthnFailed:
+        authn_response = None
+
     if authn_response is None:
         return HttpResponseRedirect(get_reverse([denied, 'denied', 'django_saml2_auth:denied']))
 
