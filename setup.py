@@ -14,7 +14,7 @@ with open(path.join(here, 'README.rst'), 'rb') as f:
 
 setup(
     name='django-saml2-auth-ai',
-    version='2.1.2',
+    version='2.1.3',
 
     description='Django SAML2 Authentication AI',
     long_description=long_description,
