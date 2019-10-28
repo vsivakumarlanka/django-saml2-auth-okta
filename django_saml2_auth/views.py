@@ -271,8 +271,14 @@ def signin(r):
     except KeyError:
         pass
 
+    relay_state = ""
+    try:
+        relay_state = settings.SAML2_AUTH["SAML_CLIENT_SETTINGS"]["service"]["sp"]["relay_state"]
+    except KeyError:
+        pass
+
     saml_client = _get_saml_client(get_current_domain(r))
-    _, info = saml_client.prepare_for_authenticate(idp_entity_id)
+    _, info = saml_client.prepare_for_authenticate(entityid=idp_entity_id, relay_state=relay_state)
 
     redirect_url = None
 
