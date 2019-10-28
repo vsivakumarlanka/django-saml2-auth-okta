@@ -1,6 +1,11 @@
 ChangeLog of Django SAML2 Auth AI
 =================================
 
+2.1.4
+-----
+
+Add possibility to configure relay state
+
 2.1.3
 -----
 
