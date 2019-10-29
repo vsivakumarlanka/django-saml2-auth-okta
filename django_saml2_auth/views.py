@@ -277,17 +277,22 @@ def signin(r):
     except KeyError:
         pass
 
+    binding = settings.SAML2_AUTH.get('SAML_CLIENT_SETTINGS', {}).get('service', {}).get('sp', {}).get('binding', BINDING_HTTP_REDIRECT)
+
     saml_client = _get_saml_client(get_current_domain(r))
-    _, info = saml_client.prepare_for_authenticate(entityid=idp_entity_id, relay_state=relay_state)
+    _, info = saml_client.prepare_for_authenticate(idp_entity_id, relay_state=relay_state, binding=binding)
 
-    redirect_url = None
-
-    for key, value in info['headers']:
-        if key == 'Location':
-            redirect_url = value
-            break
-
-    return HttpResponseRedirect(redirect_url)
+    if(binding == BINDING_HTTP_REDIRECT):
+        redirect_url = None
+        for key, value in info['headers']:
+            if key == 'Location':
+                redirect_url = value
+                break
+        return HttpResponseRedirect(redirect_url)
+    elif(binding == BINDING_HTTP_POST):
+        return HttpResponse(info['data'])
+    else:
+        return HttpResponseServerError('Sso binding not supported')
 
 
 def signout(r):
