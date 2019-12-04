@@ -4,6 +4,11 @@ ChangeLog of Django SAML2 Auth AI
 2.1.5
 -----
 
+Add binding configuration for SLO
+
+2.1.5
+-----
+
 Add post binding for sso
 
 2.1.4
