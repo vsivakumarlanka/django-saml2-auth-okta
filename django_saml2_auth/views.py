@@ -335,6 +335,12 @@ def signout(r):
 
     :param r: HTTP request
     """
+    binding = (
+        settings.SAML2_AUTH.get("SAML_CLIENT_SETTINGS", {})
+        .get("service", {})
+        .get("sp", {})
+        .get("binding", BINDING_HTTP_REDIRECT)
+    )
     saml_client = _get_saml_client(get_current_domain(r))
     subject_id = _get_subject_id(r.session)
     idp_entity_id = None
@@ -345,7 +351,9 @@ def signout(r):
     except KeyError:
         return HttpResponseServerError("Idp not defined")
 
-    response = saml_client.do_logout(subject_id, [idp_entity_id], "", None)
+    response = saml_client.do_logout(
+        subject_id, [idp_entity_id], "", None, expected_binding=binding
+    )
     return handle_logout_response(response)
 
 
