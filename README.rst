@@ -100,7 +100,7 @@ How to use?
 
         ### custom urls to use both sso and manual login (optional)
         ## If you want to use both manual login and sso login then you can change the urls to be following(optional)
-        path('saml2_auth/login/', django_saml2_auth.views.signin),
+        path('saml2_auth/login/', django_saml2_auth.views.signin,name='ssologin'),
         path(r'accounts/login/', auth_views.LoginView.as_view(template_name='your_folder/login.html'), {'template_name': 'your_folder/login.html'}, name='login'),
         path(r'accounts/logout/', auth_views.LogoutView.as_view(template_name='your_folder/logout.html'), {'template_name': 'your_folder/logout.html'}, name='logout'),
 
