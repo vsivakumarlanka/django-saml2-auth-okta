@@ -27,7 +27,7 @@ This project is a fork of django-saml2-auth_ai by `Andersino`_.
 Dependencies
 ------------
 
-This plugin is compatible with Django 1.8, 1.9, 1.10, 1.11, 2.0 and 4.0.8
+This plugin is compatible with Django 4.0.8
 The `pysaml2` Python module is required.
 
 
@@ -137,7 +137,7 @@ How to use?
             },
 
             # Optional settings below
-            'DEFAULT_NEXT_URL': '/admin',  # Custom target redirect URL after the user get logged in. Default to /admin if not set. This setting will be overwritten if you have parameter ?next= specificed in the login URL.
+            'DEFAULT_NEXT_URL': '/',  # Custom target redirect URL after the user get logged in. Default to /admin if not set. This setting will be overwritten if you have parameter ?next= specificed in the login URL.
             'NEW_USER_PROFILE': {
                 'USER_GROUPS': [],  # The default group name when a new user logs in
                 'ACTIVE_STATUS': True,  # The default active status for new users
