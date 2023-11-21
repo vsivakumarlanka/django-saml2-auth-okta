@@ -1,0 +1,24 @@
+<!-- here you need to do the extend from your base page-->
+
+
+{% block content %}
+      <!--cssand ajax-->
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+      <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+
+    <div class="row">
+        <div class="col-md-2 col-md-offset-5">
+            <div class="login-panel panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Successfully Logged Out</h3>
+                </div>
+                <div class="panel-body">
+                    <a href="/accounts/login">Log back in</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+{% endblock content %}
