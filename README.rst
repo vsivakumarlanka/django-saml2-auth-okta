@@ -1,4 +1,4 @@
-Django SAML2 Authentication AI
+Django SAML2 Authentication OKTA
 ==============================
 
 This project aims to provide a dead simple way to integrate SAML2
@@ -9,9 +9,13 @@ Any SAML2 based SSO (Single-Sign-On) identity provider with dynamic metadata
 configuration is supported by this Django plugin, for example Okta.
 
 This project is a fork of django-saml2-auth_ by `Fang Li`_.
+This project is a fork of django-saml2-auth_ai by `Andersino`_.
 
 .. _django-saml2-auth: https://github.com/fangli/django-saml2-auth
 .. _`Fang Li`: https://github.com/fangli
+
+.. _django-saml2-auth-ai: https://github.com/andersinno/django-saml2-auth-ai
+.. _`andersinno`: https://github.com/andersinno
 
 |PyPI|
 
@@ -23,7 +27,7 @@ This project is a fork of django-saml2-auth_ by `Fang Li`_.
 Dependencies
 ------------
 
-This plugin is compatible with Django 1.8, 1.9, 1.10, 1.11, and 2.0.
+This plugin is compatible with Django 1.8, 1.9, 1.10, 1.11, 2.0 and 4.0.8
 The `pysaml2` Python module is required.
 
 
@@ -34,14 +38,14 @@ You can install this plugin via `pip`:
 
 .. code-block:: bash
 
-    # pip install django-saml2-auth-ai
+    # pip install django-saml2-auth-okta
 
 or from source:
 
 .. code-block:: bash
 
-    # git clone https://github.com/andersinno/django-saml2-auth-ai
-    # cd django-saml2-auth-ai
+    # git clone https://github.com/vsivakumarlanka/django-saml2-auth-okta
+    # cd django-saml2-auth-okta
     # python setup.py install
 
 xmlsec is also required by pysaml2:
@@ -80,17 +84,27 @@ How to use?
 
         # These are the SAML2 related URLs. You can change "^saml2_auth/" regex to
         # any path you want, like "^sso_auth/", "^sso_login/", etc. (required)
-        url(r'^saml2_auth/', include('django_saml2_auth.urls')),
+        
+        path('saml2_auth/', include('django_saml2_auth.urls')),   
 
         # The following line will replace the default user login with SAML2 (optional)
         # If you want to specific the after-login-redirect-URL, use parameter "?next=/the/path/you/want"
         # with this view.
-        url(r'^accounts/login/$', django_saml2_auth.views.signin),
+        path('accounts/login/', django_saml2_auth.views.signin), 
 
         # The following line will replace the admin login with SAML2 (optional)
         # If you want to specific the after-login-redirect-URL, use parameter "?next=/the/path/you/want"
         # with this view.
-        url(r'^admin/login/$', django_saml2_auth.views.signin),
+        path('admin/login/', django_saml2_auth.views.signin), 
+
+
+        ### custom urls to use both sso and manual login (optional)
+        ## If you want to use both manual login and sso login then you can change the urls to be following(optional)
+        path('saml2_auth/login/', django_saml2_auth.views.signin),
+        path(r'accounts/login/', auth_views.LoginView.as_view(template_name='your_folder/login.html'), {'template_name': 'your_folder/login.html'}, name='login'),
+        path(r'accounts/logout/', auth_views.LogoutView.as_view(template_name='your_folder/logout.html'), {'template_name': 'your_folder/logout.html'}, name='logout'),
+
+
 
 #. Add 'django_saml2_auth' to INSTALLED_APPS
 
