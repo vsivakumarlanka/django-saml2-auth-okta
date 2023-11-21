@@ -18,7 +18,7 @@ from django.http import HttpResponse, HttpResponseRedirect, HttpResponseServerEr
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.template import TemplateDoesNotExist
-from django.utils.http import is_safe_url
+from django.utils.http import url_has_allowed_host_and_scheme
 
 from saml2.ident import code, decode
 from saml2.response import StatusAuthnFailed
@@ -281,7 +281,7 @@ def signin(r):
         next_url = r.GET.get("next", get_default_next_url())
 
     # Only permit signin requests where the next_url is a safe URL
-    if not is_safe_url(next_url, None):
+    if not url_has_allowed_host_and_scheme(next_url, None):
         return HttpResponseRedirect(
             get_reverse([denied, "denied", "django_saml2_auth:denied"])
         )
